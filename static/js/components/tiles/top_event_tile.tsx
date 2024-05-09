@@ -213,21 +213,17 @@ export const TopEventTile = memo(function TopEventTile(
               </tbody>
             </table>
           )}
-          <ChartFooter>
-            <ChartActions
-              id={props.id}
-              handleDownload={
-                showChart ? () => handleDownload(topEvents) : null
-              }
-              exploreLink={
-                props.showExploreMore
-                  ? {
-                      displayText: "Disaster Tool",
-                      url: `${EXPLORE_MORE_BASE_URL}${props.place.dcid}`,
-                    }
-                  : null
-              }
-            />
+          <ChartFooter
+            handleDownload={showChart ? () => handleDownload(topEvents) : null}
+            exploreLink={
+              props.showExploreMore
+                ? {
+                    displayText: "Disaster Tool",
+                    url: `${EXPLORE_MORE_BASE_URL}${props.place.dcid}`,
+                  }
+                : null
+            }
+          >
             <NlChartFeedback id={props.id} />
           </ChartFooter>
         </div>

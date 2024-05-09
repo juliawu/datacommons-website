@@ -48,16 +48,17 @@ export function ChartFooter(props: ChartFooterPropType): JSX.Element {
   if (
     !props.handleDownload &&
     _.isEmpty(props.exploreLink) &&
-    !props.children &&
     !props.footnote
   ) {
     return null;
   }
   return (
     <>
-      <slot name="footer" {...{ part: "footer" }}>
-        <Footnote text={props.footnote} />
-      </slot>
+      {props.footnote && (
+        <slot name="footer" {...{ part: "footer" }}>
+          <Footnote text={props.footnote} />
+        </slot>
+      )}
       <footer className="chart-container-footer">
         <div className="main-footer-section">
           <div className="outlinks">
@@ -84,7 +85,7 @@ export function ChartFooter(props: ChartFooterPropType): JSX.Element {
                 </a>
               </div>
             )}
-            {props.exploreLink && (
+            {props.exploreLink?.displayText && props.exploreLink.url && (
               <div className="outlink-item">
                 <span className="material-icons-outlined">timeline</span>
                 <a

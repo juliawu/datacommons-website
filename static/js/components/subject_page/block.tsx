@@ -23,7 +23,6 @@ import "../../../library";
 
 import axios from "axios";
 import _ from "lodash";
-import queryString from "query-string";
 import React, { useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Input, UncontrolledTooltip } from "reactstrap";
@@ -43,6 +42,7 @@ import { NamedPlace, NamedTypedPlace, StatVarSpec } from "../../shared/types";
 import { ColumnConfig, TileConfig } from "../../types/subject_page_proto_types";
 import { highestCoverageDatesEqualLatestDates } from "../../utils/app/explore_utils";
 import { stringifyFn } from "../../utils/axios";
+import { DEV_FLAGS, isFlagSet } from "../../utils/dev_flag_utils";
 import { isNlInterface } from "../../utils/explore_utils";
 import {
   addPerCapitaToTitle,
@@ -69,10 +69,6 @@ import { RankingTile } from "../tiles/ranking_tile";
 import { ScatterTile } from "../tiles/scatter_tile";
 import { Column } from "./column";
 import { StatVarProvider } from "./stat_var_provider";
-
-// Temporary flag to gate new chart icons in the footer
-// TODO (juliawu): Remove this flag once all chart action icon changes are in.
-const USE_CHART_ACTION_ICONS_FLAG = "chartIcons";
 /**
  * Translates the line tile's timeScale enum to the TimeScaleOption type
  */
@@ -206,9 +202,7 @@ export function Block(props: BlockPropType): JSX.Element {
   const columnSectionRef = useRef(null);
   const expandoRef = useRef(null);
   const snapToLatestDataInfoRef = useRef<HTMLDivElement>(null);
-  const useChartActionIcons = !!queryString.parse(window.location.hash)[
-    USE_CHART_ACTION_ICONS_FLAG
-  ];
+  const useChartActionIcons = isFlagSet(DEV_FLAGS.USE_CHART_ACTION_ICONS_FLAG);
 
   useEffect(() => {
     const overridePlaces = props.columns
