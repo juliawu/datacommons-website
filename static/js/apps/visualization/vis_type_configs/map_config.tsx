@@ -36,6 +36,7 @@ import {
   isSelectionComplete,
 } from "../../../utils/app/visualization_utils";
 import { getFacetsWithin } from "../../../utils/data_fetch_utils";
+import { DEV_FLAGS, isFlagSet } from "../../../utils/dev_flag_utils";
 import { AppContextType } from "../app_context";
 import { ChartFooter } from "../chart_footer";
 import { VisType } from "../vis_type_configs";
@@ -104,6 +105,8 @@ export function getChartArea(
   const statVarLabel =
     appContext.statVars[0].info.title || appContext.statVars[0].dcid;
   const statVarSpec = getStatVarSpec(appContext.statVars[0], VisType.MAP);
+  const useChartActionIcons = isFlagSet(DEV_FLAGS.USE_CHART_ACTION_ICONS_FLAG);
+
   return (
     <>
       <div className="chart">
@@ -115,6 +118,7 @@ export function getChartArea(
           svgChartHeight={chartHeight}
           title={statVarLabel + " (${date})"}
           allowZoom={true}
+          useChartActionIcons={useChartActionIcons}
         />
         <ChartFooter
           inputSections={[{ inputs: perCapitaInputs }]}

@@ -151,7 +151,6 @@ export function BarTile(props: BarTilePropType): JSX.Element {
       hasErrorMsg={barChartData && !!barChartData.errorMsg}
       footnote={props.footnote}
       useChartActionIcons={props.useChartActionIcons}
-      showBrandingInFooter={props.showBrandingInFooter}
     >
       <div
         id={props.id}

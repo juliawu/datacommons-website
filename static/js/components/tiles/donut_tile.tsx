@@ -74,8 +74,6 @@ export interface DonutTilePropType {
   subtitle?: string;
   // Optional: Override sources for this tile
   sources?: string[];
-  // Whether to show branding line in footer
-  showBrandingInFooter?: boolean;
   // Whether to use chart action icons in footer
   useChartActionIcons?: boolean;
 }
@@ -126,7 +124,6 @@ export function DonutTile(props: DonutTilePropType): JSX.Element {
       hasErrorMsg={donutChartData && !!donutChartData.errorMsg}
       footnote={props.footnote}
       useChartActionIcons={props.useChartActionIcons}
-      showBrandingInFooter={props.showBrandingInFooter}
     >
       <div
         id={props.id}

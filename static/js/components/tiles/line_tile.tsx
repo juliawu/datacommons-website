@@ -103,8 +103,6 @@ export interface LineTilePropType {
   highlightDate?: string;
   // Optional: Override sources for this tile
   sources?: string[];
-  // Whether to show branding line in footer
-  showBrandingInFooter?: boolean;
   // Whether to use chart action icons in footer
   useChartActionIcons?: boolean;
 }
@@ -158,7 +156,6 @@ export function LineTile(props: LineTilePropType): JSX.Element {
       hasErrorMsg={chartData && !!chartData.errorMsg}
       footnote={props.footnote}
       useChartActionIcons={props.useChartActionIcons}
-      showBrandingInFooter={props.showBrandingInFooter}
     >
       <div
         id={props.id}

@@ -40,6 +40,7 @@ import {
   SeverityFilter,
   TileConfig,
 } from "../../types/subject_page_proto_types";
+import { DEV_FLAGS, isFlagSet } from "../../utils/dev_flag_utils";
 import {
   fetchDisasterEventPoints,
   getDate,
@@ -114,6 +115,7 @@ export const DisasterEventBlock = memo(function DisasterEventBlock(
   const isInitialLoading = useRef(true);
   const prevFilters = useRef(severityFilters);
   const prevDate = useRef(date);
+  const useChartActionIcons = isFlagSet(DEV_FLAGS.USE_CHART_ACTION_ICONS_FLAG);
 
   useEffect(() => {
     // when showFilters is toggled, calculate what the filter section height
@@ -229,7 +231,8 @@ export const DisasterEventBlock = memo(function DisasterEventBlock(
                       ? disasterEventData.disasterEventData
                       : null,
                     disasterEventData ? disasterEventData.date : "",
-                    columnTileClassName
+                    columnTileClassName,
+                    useChartActionIcons
                   )}
                 />
               );
@@ -350,7 +353,8 @@ function renderTiles(
   minIdxToHide: number,
   disasterEventData: Record<string, DisasterEventPointData>,
   date: string,
-  tileClassName?: string
+  tileClassName?: string,
+  useChartActionIcons?: boolean
 ): JSX.Element {
   if (!tiles) {
     return <></>;
@@ -432,6 +436,7 @@ function renderTiles(
             disasterEventData={tileEventData}
             enclosedPlaceType={enclosedPlaceType}
             showExploreMore={props.showExploreMore}
+            useChartActionIcons={useChartActionIcons}
           />
         );
       }

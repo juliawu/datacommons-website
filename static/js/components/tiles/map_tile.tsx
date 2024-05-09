@@ -127,8 +127,6 @@ export interface MapTilePropType {
   sources?: string[];
   // Optional: listen for property value changes with this event name
   subscribe?: string;
-  // Whether to show branding line in footer
-  showBrandingInFooter?: boolean;
   // Whether to use chart action icons in footer
   useChartActionIcons?: boolean;
 }
@@ -331,7 +329,6 @@ export function MapTile(props: MapTilePropType): JSX.Element {
       hasErrorMsg={!_.isEmpty(mapChartData) && !!mapChartData.errorMsg}
       footnote={props.footnote}
       useChartActionIcons={props.useChartActionIcons}
-      showBrandingInFooter={props.showBrandingInFooter}
     >
       {showZoomButtons && !mapChartData.errorMsg && (
         <div className="map-zoom-button-section">

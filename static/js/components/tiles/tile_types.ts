@@ -27,8 +27,6 @@ export interface TileProp {
   className?: string;
   // Id for the chart
   id: string;
-  // Optional: whether to display branding line "powered by Google's Data Commons"
-  showBrandingInFooter?: boolean;
   // Whether or not to show the explore more button.
   showExploreMore?: boolean;
   // Title of the chart

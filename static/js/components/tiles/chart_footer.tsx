@@ -27,21 +27,24 @@ import {
   GA_PARAM_TILE_TYPE,
   triggerGAEvent,
 } from "../../shared/ga_events";
+import { ChartActions } from "./chart_action_icons";
 
 // Number of characters in footnote to show before "show more"
 const FOOTNOTE_CHAR_LIMIT = 150;
 
 interface ChartFooterPropType {
+  // Id of the chart the footer attaches to
+  chartId: string;
   // Callback to run after "download" is clicked
   handleDownload?: () => void;
   // Link to explore more. Only show explore button if this object is non-empty.
   exploreLink?: { displayText: string; url: string };
-  // Whether to show branding "Powered by Data Commons" line.
-  showBranding?: boolean;
   // Child nodes of the footer
   children?: React.ReactNode;
   // Text to show above buttons
   footnote?: string;
+  // Whether the chart action items are being used
+  useChartActionIcons?: boolean;
 }
 
 export function ChartFooter(props: ChartFooterPropType): JSX.Element {
@@ -62,13 +65,7 @@ export function ChartFooter(props: ChartFooterPropType): JSX.Element {
       <footer className="chart-container-footer">
         <div className="main-footer-section">
           <div className="outlinks">
-            {props.showBranding && (
-              <div className="branding-line">
-                Powered by{" "}
-                <a href="https://datacommons.org">Google&apos;s Data Commons</a>
-              </div>
-            )}
-            {props.handleDownload && (
+            {!props.useChartActionIcons && props.handleDownload && (
               <div className="outlink-item">
                 <span className="material-icons-outlined">download</span>
                 <a
@@ -78,21 +75,21 @@ export function ChartFooter(props: ChartFooterPropType): JSX.Element {
                     triggerGAEvent(GA_EVENT_TILE_DOWNLOAD, {
                       [GA_PARAM_TILE_TYPE]: props.exploreLink?.displayText,
                     });
-                    props.handleDownload();
+                    props.handleDownload?.();
                   }}
                 >
                   Download
                 </a>
               </div>
             )}
-            {props.exploreLink?.displayText && props.exploreLink.url && (
+            {!props.useChartActionIcons && !_.isEmpty(props.exploreLink) && (
               <div className="outlink-item">
                 <span className="material-icons-outlined">timeline</span>
                 <a
                   href={props.exploreLink.url}
                   rel="noopener noreferrer"
                   target="_blank"
-                  onClick={(event) => {
+                  onClick={() => {
                     triggerGAEvent(GA_EVENT_TILE_EXPLORE_MORE, {
                       [GA_PARAM_TILE_TYPE]: props.exploreLink?.displayText,
                     });
@@ -105,6 +102,13 @@ export function ChartFooter(props: ChartFooterPropType): JSX.Element {
             )}
           </div>
           {props.children}
+          {props.useChartActionIcons && (
+            <ChartActions
+              id={props.chartId}
+              handleDownload={props.handleDownload}
+              exploreLink={props.exploreLink}
+            />
+          )}
         </div>
       </footer>
     </>

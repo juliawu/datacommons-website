@@ -44,7 +44,6 @@ import { getPlaceNames } from "../../utils/place_utils";
 import { formatPropertyValue } from "../../utils/property_value_utils";
 import { TileSources } from "../../utils/tile_utils";
 import { NlChartFeedback } from "../nl_feedback";
-import { ChartActions } from "./chart_action_icons";
 import { ChartFooter } from "./chart_footer";
 import { ChartDownload } from "./modal/chart_download";
 
@@ -64,6 +63,8 @@ interface TopEventTilePropType {
   className?: string;
   // Whether or not to show the explore more button.
   showExploreMore?: boolean;
+  // Whether to use the new chart action icons in the footer.
+  useChartActionIcons?: boolean;
 }
 
 // TODO: Use ChartTileContainer like other tiles.
@@ -214,6 +215,7 @@ export const TopEventTile = memo(function TopEventTile(
             </table>
           )}
           <ChartFooter
+            chartId={props.id}
             handleDownload={showChart ? () => handleDownload(topEvents) : null}
             exploreLink={
               props.showExploreMore
@@ -223,8 +225,9 @@ export const TopEventTile = memo(function TopEventTile(
                   }
                 : null
             }
+            useChartActionIcons={props.useChartActionIcons}
           >
-            <NlChartFeedback id={props.id} />
+            {!props.useChartActionIcons && <NlChartFeedback id={props.id} />}
           </ChartFooter>
         </div>
       </div>

@@ -57,8 +57,6 @@ interface ChartTileContainerProp {
   hasErrorMsg?: boolean;
   // Text to show in footer
   footnote?: string;
-  // Whether to show "Powered by Google's Data Commons" in the footer
-  showBrandingInFooter?: boolean;
   // Subtitle text
   subtitle?: string;
   // Whether to display chart actions on the right
@@ -115,21 +113,12 @@ export function ChartTileContainer(props: ChartTileContainerProp): JSX.Element {
         {props.children}
       </div>
       <ChartFooter
+        chartId={props.id}
         footnote={props.footnote}
-        exploreLink={!props.useChartActionIcons && props.exploreLink}
-        handleDownload={
-          !props.useChartActionIcons && props.allowDownload && handleDownload
-        }
-        showBranding={props.showBrandingInFooter}
+        exploreLink={props.exploreLink}
+        handleDownload={props.allowDownload && handleDownload}
+        useChartActionIcons={props.useChartActionIcons}
       >
-        {props.useChartActionIcons && (
-          <ChartActions
-            container={containerRef.current}
-            id={props.id}
-            exploreLink={props.exploreLink}
-            handleDownload={props.allowDownload && handleDownload}
-          />
-        )}
         {!props.useChartActionIcons && <NlChartFeedback id={props.id} />}
       </ChartFooter>
       {showDownload && (

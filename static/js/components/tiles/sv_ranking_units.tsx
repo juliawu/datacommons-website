@@ -123,25 +123,12 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
           )}
           {!props.hideFooter && (
             <ChartFooter
-              handleDownload={
-                !props.useChartActionIcons &&
-                !props.errorMsg &&
-                handleDownloadCallback
-              }
-              exploreLink={
-                !props.useChartActionIcons &&
-                !props.errorMsg &&
-                getExploreLink(props, true)
-              }
+              chartId={props.tileId}
+              handleDownload={!props.errorMsg && handleDownloadCallback}
+              exploreLink={!props.errorMsg && getExploreLink(props, true)}
               footnote={props.footnote}
+              useChartActionIcons={props.useChartActionIcons}
             >
-              {props.useChartActionIcons && (
-                <ChartActions
-                  id={props.tileId}
-                  handleDownload={!props.errorMsg && handleDownloadCallback}
-                  exploreLink={!props.errorMsg && getExploreLink(props, true)}
-                />
-              )}
               {!props.useChartActionIcons && (
                 <NlChartFeedback id={props.tileId} />
               )}
@@ -167,27 +154,12 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
               )}
               {!props.hideFooter && (
                 <ChartFooter
-                  handleDownload={
-                    !props.useChartActionIcons &&
-                    !props.errorMsg &&
-                    handleDownloadCallback
-                  }
-                  exploreLink={
-                    !props.useChartActionIcons &&
-                    !props.errorMsg &&
-                    getExploreLink(props, true)
-                  }
+                  chartId={props.tileId}
+                  handleDownload={!props.errorMsg && handleDownloadCallback}
+                  exploreLink={!props.errorMsg && getExploreLink(props, true)}
                   footnote={props.footnote}
+                  useChartActionIcons={props.useChartActionIcons}
                 >
-                  {props.useChartActionIcons && (
-                    <ChartActions
-                      id={props.tileId}
-                      handleDownload={!props.errorMsg && handleDownloadCallback}
-                      exploreLink={
-                        !props.errorMsg && getExploreLink(props, true)
-                      }
-                    />
-                  )}
                   {!props.useChartActionIcons && (
                     <NlChartFeedback id={props.tileId} />
                   )}
@@ -212,27 +184,12 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
               )}
               {!props.hideFooter && (
                 <ChartFooter
-                  handleDownload={
-                    !props.useChartActionIcons &&
-                    !props.errorMsg &&
-                    handleDownloadCallback
-                  }
-                  exploreLink={
-                    !props.useChartActionIcons &&
-                    !props.errorMsg &&
-                    getExploreLink(props, true)
-                  }
+                  chartId={props.tileId}
+                  handleDownload={!props.errorMsg && handleDownloadCallback}
+                  exploreLink={!props.errorMsg && getExploreLink(props, true)}
                   footnote={props.footnote}
+                  useChartActionIcons={props.useChartActionIcons}
                 >
-                  {props.useChartActionIcons && (
-                    <ChartActions
-                      id={props.tileId}
-                      handleDownload={!props.errorMsg && handleDownloadCallback}
-                      exploreLink={
-                        !props.errorMsg && getExploreLink(props, false)
-                      }
-                    />
-                  )}
                   {!props.useChartActionIcons && (
                     <NlChartFeedback id={props.tileId} />
                   )}
