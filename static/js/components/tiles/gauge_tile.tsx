@@ -65,6 +65,10 @@ export interface GaugeTilePropType {
   subtitle?: string;
   // Optional: Override sources for this tile
   sources?: string[];
+  // Whether to show branding line in footer
+  showBrandingInFooter?: boolean;
+  // Whether to use chart action icons in footer
+  useChartActionIcons?: boolean;
 }
 
 export interface GaugeChartData {
@@ -118,11 +122,13 @@ export function GaugeTile(props: GaugeTilePropType): JSX.Element {
       subtitle={props.subtitle}
       sources={props.sources || (gaugeData && gaugeData.sources)}
       replacementStrings={replacementStrings}
-      allowEmbed={true}
+      allowDownload={true}
       className={`bar-chart`}
       getDataCsv={getDataCsvCallback(props)}
       hasErrorMsg={gaugeData && !!gaugeData.errorMsg}
       footnote={props.footnote}
+      useChartActionIcons={props.useChartActionIcons}
+      showBrandingInFooter={props.showBrandingInFooter}
     >
       <div
         className={`svg-container ${ASYNC_ELEMENT_HOLDER_CLASS}`}

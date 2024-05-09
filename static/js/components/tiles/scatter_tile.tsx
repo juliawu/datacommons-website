@@ -87,6 +87,10 @@ export interface ScatterTilePropType {
   subtitle?: string;
   // Optional: Override sources for this tile
   sources?: string[];
+  // Whether to show branding line in footer
+  showBrandingInFooter?: boolean;
+  // Whether to use chart action icons in footer
+  useChartActionIcons?: boolean;
 }
 
 interface RawData {
@@ -158,12 +162,14 @@ export function ScatterTile(props: ScatterTilePropType): JSX.Element {
       sources={props.sources || (scatterChartData && scatterChartData.sources)}
       replacementStrings={getReplacementStrings(props, scatterChartData)}
       className={`${props.className} scatter-chart`}
-      allowEmbed={true}
+      allowDownload={true}
       getDataCsv={getDataCsvCallback(props, scatterChartData)}
       isInitialLoading={_.isNull(scatterChartData)}
       exploreLink={props.showExploreMore ? getExploreLink(props) : null}
       hasErrorMsg={scatterChartData && !!scatterChartData.errorMsg}
       footnote={props.footnote}
+      useChartActionIcons={props.useChartActionIcons}
+      showBrandingInFooter={props.showBrandingInFooter}
     >
       <div className="scatter-tile-content">
         <div
