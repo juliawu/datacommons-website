@@ -44,7 +44,7 @@ variables.
    To generate the `small` embeddings:
 
    ```bash
-   ./run.sh -b small
+   ./run.sh -f small
    ```
 
    To generate the `medium_ft` embeddings:
@@ -63,6 +63,18 @@ variables.
 
    ```bash
    ./run.sh -c undata data/curated_input/undata data/alternatives/undata/*.csv
+   ```
+
+   To generate the `undata_ilo_ft` embeddings:
+
+   ```bash
+   ./run.sh -c undata_ilo data/curated_input/undata_ilo
+   ```
+
+   To generate the `undata_dev_ft` embeddings:
+
+   ```bash
+   ./run.sh -c undata_dev data/curated_input/undata_ilo,data/curated_input/undata data/alternatives/undata/*.csv
    ```
 
    To generate the `bio_ft` embeddings:

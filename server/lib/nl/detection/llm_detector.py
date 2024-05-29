@@ -22,7 +22,6 @@ from server.lib.nl.common import serialize
 from server.lib.nl.common import utterance
 from server.lib.nl.detection import llm_api
 from server.lib.nl.detection import place
-from server.lib.nl.detection import rerank
 from server.lib.nl.detection import types
 from server.lib.nl.detection import utils as dutils
 from server.lib.nl.detection import variable
@@ -114,7 +113,7 @@ def detect(query: str,
            query_detection_debug_logs: Dict,
            mode: str,
            ctr: counters.Counters,
-           rerank_fn: rerank.RerankCallable = None,
+           reranker: str = '',
            allow_triples: bool = False) -> Detection:
   # History
   history = []
@@ -164,14 +163,15 @@ def detect(query: str,
   skip_topics = mode == params.QueryMode.TOOLFORMER
   for sv in sv_list:
     try:
+      # TODO: Consider if we should apply threshold bump
       var_detection_results.append(
           variable.detect_vars(sv,
                                index_type,
                                ctr,
                                dummy_dict,
-                               rerank_fn=rerank_fn,
+                               reranker=reranker,
                                skip_topics=skip_topics))
-    except ValueError as e:
+    except Exception as e:
       ctr.err('llm_detect_vars_value_error', {'q': sv, 'err': str(e)})
   merged_var_detection = _merge_sv_dicts(sv_list, var_detection_results)
   sv_detection = dutils.create_sv_detection(query,
@@ -296,7 +296,7 @@ def _handle_quantity(filter: Dict, ctype: str) -> types.NLClassifier:
       qop = _LLM_OP_TO_QUANTITY_OP.get(op, None)
       if qop:
         qty = types.Quantity(cmp=qop, val=val)
-    except ValueError:
+    except Exception:
       pass
   if not qty:
     return None

@@ -175,7 +175,6 @@ function getChartArea(
           showPlaceLabels: appContext.displayOptions.scatterPlaceLabels,
           showQuadrants: appContext.displayOptions.scatterQuadrants,
         }}
-        showLoadingSpinner={true}
         useChartActionIcons={isFlagSet(DEV_FLAGS.USE_CHART_ACTION_ICONS_FLAG)}
       />
       <ChartFooter

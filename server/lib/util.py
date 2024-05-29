@@ -25,12 +25,12 @@ from typing import Dict, List, Set
 import urllib
 
 from flask import make_response
+from flask import request
 from google.protobuf import text_format
 
 from server.config import subject_page_pb2
 import server.lib.fetch as fetch
 import server.services.datacommons as dc
-import shared.model.loader as model_loader
 
 _ready_check_timeout = 300  # seconds
 _ready_check_sleep_seconds = 5
@@ -485,10 +485,13 @@ def is_up(url: str):
     # Disable Bandit security check 310. http scheme is already checked above.
     # Codacity still calls out the error so disable the check.
     # https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b310-urllib-urlopen
-    urllib.request.urlopen(url)  # nosec B310
-    return True
+    code = urllib.request.urlopen(url).getcode()  # nosec B310
+    if code != 200:
+      return False
   except urllib.error.URLError:
     return False
+  logging.info("%s is up running", url)
+  return True
 
 
 def check_backend_ready(urls: List[str]):
@@ -642,7 +645,13 @@ def _get_highest_coverage_date(observation_entity_counts_by_date,
   return best_coverage['date']
 
 
-def get_vertex_ai_models():
-  vertex_ai_indexes = model_loader.load_indexes()
-  reranking_models = model_loader.load_models('RERANKING')
-  return dict(vertex_ai_indexes, **reranking_models)
+def post_body_cache_key():
+  """
+  Builds flask cache key for POST requests using the request path and
+  JSON-encoded post body
+  """
+  body_object = request.get_json()
+  full_path = request.full_path
+  post_body = json.dumps(body_object, sort_keys=True)
+  cache_key = f'{full_path},{post_body}'
+  return cache_key

@@ -189,7 +189,6 @@ function getChartArea(
               svgChartHeight={chartHeight}
               place={appContext.places[0]}
               colors={COLORS}
-              showLoadingSpinner={true}
               showTooltipOnHover={true}
               useChartActionIcons={isFlagSet(
                 DEV_FLAGS.USE_CHART_ACTION_ICONS_FLAG

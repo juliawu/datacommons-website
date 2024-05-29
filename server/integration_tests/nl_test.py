@@ -35,8 +35,8 @@ class NLTest(NLWebServerTestCase):
   def run_sequence(self,
                    test_dir,
                    queries,
-                   idx='medium_ft',
-                   detector='hybridsafety',
+                   idx='base_uae_mem',
+                   detector='hybrid',
                    check_place_detection=False,
                    expected_detectors=[],
                    failure='',
@@ -164,6 +164,9 @@ class NLTest(NLWebServerTestCase):
 
     self.assertTrue(success, f"wanted: {i18n_lang}, got {detected}")
 
+
+class NLTestDemo(NLTest):
+
   def test_textbox_sample(self):
     # This is the sample advertised in our textbox
     self.run_sequence('textbox_sample', ['family earnings in california'])
@@ -225,9 +228,9 @@ class NLTest(NLWebServerTestCase):
             # instead we would pick contained-in from context (County).
             'GDP of countries in the US',
         ],
-        detector='hybridsafety',
+        detector='hybrid',
         expected_detectors=[
-            'Hybrid - LLM Safety',
+            'Hybrid - LLM Fallback',
             'Hybrid - Heuristic Based',
             'Hybrid - Heuristic Based',
             'Hybrid - Heuristic Based',
@@ -249,13 +252,16 @@ class NLTest(NLWebServerTestCase):
             "Prevalence of Asthma in California cities with hispanic population over 10000",
         ],
         # Use heuristic because LLM fallback is not very deterministic.
-        detector='heuristic')
+        detector='heuristic',
+        test='filter_test')
 
   def test_demo_climatetrace(self):
     self.run_sequence('demo_climatetrace',
                       ['Which countries emit the most greenhouse gases?'],
                       test='unittest')
 
+
+class NLTestMisc(NLTest):
   # This test uses DC's Recognize Places API.
   def test_place_detection_e2e_dc(self):
     self.run_sequence('place_detection_e2e_dc', [

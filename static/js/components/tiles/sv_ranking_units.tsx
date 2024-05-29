@@ -69,6 +69,7 @@ interface SvRankingUnitsProps {
     chartWidth: number,
     sources: string[]
   ) => ChartDownloadSpec;
+  isLoading?: boolean;
 }
 
 /**
@@ -81,7 +82,6 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
   const rankingGroup = rankingData[statVar];
   const highestRankingUnitRef = useRef<HTMLDivElement>();
   const lowestRankingUnitRef = useRef<HTMLDivElement>();
-
   /**
    * Build content and triggers export modal window
    *
@@ -159,7 +159,8 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
             highestRankingUnitRef,
             props.onHoverToggled,
             props.errorMsg,
-            props.sources
+            props.sources,
+            props.isLoading
           )}
           {!props.hideFooter && (
             <ChartFooter
@@ -200,7 +201,8 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
                 highestRankingUnitRef,
                 props.onHoverToggled,
                 undefined,
-                props.sources
+                props.sources,
+                props.isLoading
               )}
               {!props.hideFooter && (
                 <ChartFooter
@@ -236,7 +238,8 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
                 lowestRankingUnitRef,
                 props.onHoverToggled,
                 undefined,
-                props.sources
+                props.sources,
+                props.isLoading
               )}
               {!props.hideFooter && (
                 <ChartFooter
@@ -368,7 +371,8 @@ export function getRankingUnit(
   rankingUnitRef?: RefObject<HTMLDivElement>,
   onHoverToggled?: (placeDcid: string, hover: boolean) => void,
   errorMsg?: string,
-  sources?: string[]
+  sources?: string[],
+  isLoading?: boolean
 ): JSX.Element {
   const { topPoints, bottomPoints } = getRankingUnitPoints(
     rankingMetadata,
@@ -393,6 +397,7 @@ export function getRankingUnit(
       bottomPoints={bottomPoints}
       numDataPoints={rankingGroup.numDataPoints}
       isHighest={isHighest}
+      isLoading={isLoading}
       svNames={
         rankingMetadata.showMultiColumn ? rankingGroup.svName : undefined
       }
