@@ -201,6 +201,8 @@ export function MapTile(props: MapTilePropType): JSX.Element {
     : null;
   const showZoomButtons =
     !!zoomParams && !!mapChartData && _.isEqual(mapChartData.props, props);
+  console.log(props);
+  console.log(props.statVarSpec);
 
   useEffect(() => {
     if (
@@ -289,6 +291,7 @@ export function MapTile(props: MapTilePropType): JSX.Element {
       isLoading={isLoading}
       title={props.title}
       subtitle={props.subtitle}
+      apiRoot={props.apiRoot}
       sources={props.sources || (mapChartData && mapChartData.sources)}
       replacementStrings={
         mapChartData && getReplacementStrings(props, mapChartData)
@@ -329,6 +332,11 @@ export function MapTile(props: MapTilePropType): JSX.Element {
       hasErrorMsg={!_.isEmpty(mapChartData) && !!mapChartData.errorMsg}
       footnote={props.footnote}
       useChartActionIcons={props.useChartActionIcons}
+      statVarSpecs={
+        !_.isEmpty(props.dataSpecs)
+          ? [props.dataSpecs[0].variable]
+          : [props.statVarSpec]
+      }
     >
       {showZoomButtons && !mapChartData.errorMsg && (
         <div className="map-zoom-button-section">

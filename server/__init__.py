@@ -157,6 +157,9 @@ def register_routes_common(app):
   from server.routes.place import html as place_html
   app.register_blueprint(place_html.bp)
 
+  from server.routes.dev_place import html as dev_place_html
+  app.register_blueprint(dev_place_html.bp)
+
   from server.routes.ranking import html as ranking_html
   app.register_blueprint(ranking_html.bp)
 
@@ -397,6 +400,10 @@ def create_app(nl_root=DEFAULT_NL_ROOT):
   else:
     blocklist_svg = ["dc/g/Uncategorized", "oecd/g/OECD"]
   app.config['BLOCKLIST_SVG'] = blocklist_svg
+
+  # Set whether to filter stat vars with low geographic coverage in the
+  # map and scatter tools.
+  app.config['MIN_STAT_VAR_GEO_COVERAGE'] = cfg.MIN_STAT_VAR_GEO_COVERAGE
 
   if not cfg.TEST:
     urls = get_health_check_urls()

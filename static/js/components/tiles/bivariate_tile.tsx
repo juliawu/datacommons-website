@@ -127,6 +127,7 @@ export function BivariateTile(props: BivariateTilePropType): JSX.Element {
     <ChartTileContainer
       id={props.id}
       title={props.title}
+      apiRoot={props.apiRoot}
       sources={bivariateChartData && bivariateChartData.sources}
       replacementStrings={rs}
       className={`${props.className} bivariate-chart`}
@@ -136,6 +137,7 @@ export function BivariateTile(props: BivariateTilePropType): JSX.Element {
       exploreLink={props.showExploreMore ? getExploreLink(props) : null}
       hasErrorMsg={bivariateChartData && !!bivariateChartData.errorMsg}
       useChartActionIcons={props.useChartActionIcons}
+      statVarSpecs={props.statVarSpec}
     >
       <div
         id={props.id}

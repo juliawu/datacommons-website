@@ -147,6 +147,7 @@ export function BarTile(props: BarTilePropType): JSX.Element {
   return (
     <ChartTileContainer
       allowEmbed={true}
+      apiRoot={props.apiRoot}
       className={`${props.className} bar-chart`}
       exploreLink={props.showExploreMore ? getExploreLink(props) : null}
       footnote={props.footnote}
@@ -160,6 +161,7 @@ export function BarTile(props: BarTilePropType): JSX.Element {
       subtitle={props.subtitle}
       title={props.title}
       useChartActionIcons={props.useChartActionIcons}
+      statVarSpecs={props.variables}
     >
       <div
         id={props.id}

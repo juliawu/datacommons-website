@@ -22,6 +22,7 @@ import { sources } from "webpack";
 
 import { VisType } from "../../apps/visualization/vis_type_configs";
 import { URL_PATH } from "../../constants/app/visualization_constants";
+import { StatVarSpec } from "../../shared/types";
 import {
   RankingData,
   RankingGroup,
@@ -70,6 +71,8 @@ interface SvRankingUnitsProps {
     sources: string[]
   ) => ChartDownloadSpec;
   isLoading?: boolean;
+  statVarSpecs: StatVarSpec[];
+  containerRef: React.RefObject<HTMLElement>;
 }
 
 /**
@@ -156,6 +159,8 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
             rankingMetadata,
             true,
             props.apiRoot,
+            props.statVarSpecs,
+            props.containerRef,
             highestRankingUnitRef,
             props.onHoverToggled,
             props.errorMsg,
@@ -198,6 +203,8 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
                 rankingMetadata,
                 true,
                 props.apiRoot,
+                props.statVarSpecs,
+                props.containerRef,
                 highestRankingUnitRef,
                 props.onHoverToggled,
                 undefined,
@@ -235,6 +242,8 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
                 rankingMetadata,
                 false,
                 props.apiRoot,
+                props.statVarSpecs,
+                props.containerRef,
                 lowestRankingUnitRef,
                 props.onHoverToggled,
                 undefined,
@@ -368,6 +377,8 @@ export function getRankingUnit(
   rankingMetadata: RankingTileSpec,
   isHighest: boolean,
   apiRoot: string,
+  statVarSpecs: StatVarSpec[],
+  containerRef: React.RefObject<HTMLElement>,
   rankingUnitRef?: RefObject<HTMLDivElement>,
   onHoverToggled?: (placeDcid: string, hover: boolean) => void,
   errorMsg?: string,
@@ -404,7 +415,12 @@ export function getRankingUnit(
       onHoverToggled={onHoverToggled}
       headerChild={
         errorMsg ? null : (
-          <TileSources sources={sources || rankingGroup.sources} />
+          <TileSources
+            apiRoot={apiRoot}
+            containerRef={containerRef}
+            sources={sources || rankingGroup.sources}
+            statVarSpecs={statVarSpecs}
+          />
         )
       }
       errorMsg={errorMsg}

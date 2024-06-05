@@ -115,6 +115,7 @@ export function DonutTile(props: DonutTilePropType): JSX.Element {
       id={props.id}
       title={props.title}
       subtitle={props.subtitle}
+      apiRoot={props.apiRoot}
       sources={props.sources || (donutChartData && donutChartData.sources)}
       replacementStrings={getReplacementStrings(props, donutChartData)}
       className={`${props.className} bar-chart`}
@@ -124,6 +125,7 @@ export function DonutTile(props: DonutTilePropType): JSX.Element {
       hasErrorMsg={donutChartData && !!donutChartData.errorMsg}
       footnote={props.footnote}
       useChartActionIcons={props.useChartActionIcons}
+      statVarSpecs={props.statVarSpec}
     >
       <div
         id={props.id}

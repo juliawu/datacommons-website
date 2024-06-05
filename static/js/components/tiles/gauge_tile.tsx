@@ -118,6 +118,7 @@ export function GaugeTile(props: GaugeTilePropType): JSX.Element {
       id={props.id}
       title={props.title}
       subtitle={props.subtitle}
+      apiRoot={props.apiRoot}
       sources={props.sources || (gaugeData && gaugeData.sources)}
       replacementStrings={replacementStrings}
       allowEmbed={true}
@@ -126,6 +127,7 @@ export function GaugeTile(props: GaugeTilePropType): JSX.Element {
       hasErrorMsg={gaugeData && !!gaugeData.errorMsg}
       footnote={props.footnote}
       useChartActionIcons={props.useChartActionIcons}
+      statVarSpecs={[props.statVarSpec]}
     >
       <div
         className={`svg-container ${ASYNC_ELEMENT_HOLDER_CLASS}`}

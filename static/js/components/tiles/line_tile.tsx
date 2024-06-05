@@ -144,6 +144,7 @@ export function LineTile(props: LineTilePropType): JSX.Element {
   return (
     <ChartTileContainer
       allowEmbed={true}
+      apiRoot={props.apiRoot}
       className={`${props.className} line-chart`}
       exploreLink={props.showExploreMore ? getExploreLink(props) : null}
       footnote={props.footnote}
@@ -157,6 +158,7 @@ export function LineTile(props: LineTilePropType): JSX.Element {
       subtitle={props.subtitle}
       title={props.title}
       useChartActionIcons={props.useChartActionIcons}
+      statVarSpecs={props.statVarSpec}
     >
       <div
         id={props.id}

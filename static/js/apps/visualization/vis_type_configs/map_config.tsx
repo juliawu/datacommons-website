@@ -224,7 +224,7 @@ function getFooter(): string {
 export const MAP_CONFIG = {
   displayName: "Map Explorer",
   svHierarchyType: StatVarHierarchyType.MAP,
-  svHierarchyNumExistence: 10,
+  svHierarchyNumExistence: globalThis.minStatVarGeoCoverage,
   singlePlace: true,
   getChildTypesFn: getAllChildPlaceTypes,
   numSv: 1,
