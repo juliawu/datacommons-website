@@ -31,7 +31,10 @@ import { getTimelineSqlQuery } from "../../../tools/timeline/bq_query_utils";
 import { getStatVarGroups } from "../../../utils/app/timeline_utils";
 import { getStatVarSpec } from "../../../utils/app/visualization_utils";
 import { getFacets } from "../../../utils/data_fetch_utils";
-import { DEV_FLAGS, isFlagSet } from "../../../utils/dev_flag_utils";
+import {
+  EXPERIMENT_FLAGS,
+  isExperimentEnabled,
+} from "../../../utils/experiment_flag_utils";
 import { AppContextType, ContextStatVar } from "../app_context";
 import { ChartFooter } from "../chart_footer";
 import { VisType } from "../vis_type_configs";
@@ -190,8 +193,8 @@ function getChartArea(
               place={appContext.places[0]}
               colors={COLORS}
               showTooltipOnHover={true}
-              useChartActionIcons={isFlagSet(
-                DEV_FLAGS.USE_CHART_ACTION_ICONS_FLAG
+              useChartActionIcons={isExperimentEnabled(
+                EXPERIMENT_FLAGS.USE_CHART_ACTION_ICONS
               )}
             />
             <ChartFooter

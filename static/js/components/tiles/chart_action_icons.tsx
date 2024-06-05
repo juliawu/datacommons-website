@@ -46,28 +46,33 @@ interface ActionIconPropType {
 
 function ActionIcon(props: ActionIconPropType): JSX.Element {
   const linkRef = useRef<HTMLAnchorElement>();
-  const [linkIsReady, setLinkIsReady] = useState(false);
+  // const [linkIsReady, setLinkIsReady] = useState(false);
 
-  // Check if anchor link has rendered.
-  // Tooltip needs the anchor link to render first to have a target to bind to.
-  useEffect(() => {
-    if (linkRef.current) {
-      setLinkIsReady(true);
-    }
-  }, [linkRef]);
+  // // Check if anchor link has rendered.
+  // // Tooltip needs the anchor link to render first to have a target to bind to.
+  // useEffect(() => {
+  //   if (linkRef.current) {
+  //     setLinkIsReady(true);
+  //   }
+  // }, [linkRef]);
 
   return (
     <div className="outlink-item action-icon">
       <a
         href={props.url || "#"}
-        onClick={props.onClickHandler}
+        onClick={(event) => {
+          if (!props.url) {
+            event.preventDefault();
+          }
+          props.onClickHandler;
+        }}
         ref={linkRef}
         rel={props.url ? "" : "noopener noreferrer"}
         target={props.url ? "" : "_blank"}
       >
         <span className="material-icons-outlined">{props.icon}</span>
       </a>
-      {linkIsReady && (
+      {linkRef.current && (
         <UncontrolledTooltip
           boundariesElement="window"
           container={props.container}
@@ -112,6 +117,7 @@ export function ChartActions(props: ChartActionsPropType): JSX.Element {
               event.preventDefault();
               triggerGAEvent(GA_EVENT_TILE_DOWNLOAD, {
                 [GA_PARAM_TILE_TYPE]: props.exploreLink?.displayText,
+                transport: "beacon",
               });
               loadChartDownloadSpec();
               toggleDownloadModal();
@@ -130,15 +136,16 @@ export function ChartActions(props: ChartActionsPropType): JSX.Element {
             onClickHandler={() => {
               triggerGAEvent(GA_EVENT_TILE_EXPLORE_MORE, {
                 [GA_PARAM_TILE_TYPE]: props.exploreLink?.displayText,
+                transport: "beacon",
               });
               return true;
             }}
             tooltipContent={
               <>
-                Open this chart in the <b>{props.exploreLink?.displayText}</b>
+                Open this chart in the <b>{props.exploreLink.displayText}</b>
               </>
             }
-            url={props.exploreLink?.url}
+            url={props.exploreLink.url}
           />
         )}
       </div>

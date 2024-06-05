@@ -42,7 +42,10 @@ import { NamedPlace, NamedTypedPlace, StatVarSpec } from "../../shared/types";
 import { ColumnConfig, TileConfig } from "../../types/subject_page_proto_types";
 import { highestCoverageDatesEqualLatestDates } from "../../utils/app/explore_utils";
 import { stringifyFn } from "../../utils/axios";
-import { DEV_FLAGS, isFlagSet } from "../../utils/dev_flag_utils";
+import {
+  EXPERIMENT_FLAGS,
+  isExperimentEnabled,
+} from "../../utils/experiment_flag_utils";
 import { isNlInterface } from "../../utils/explore_utils";
 import {
   addPerCapitaToTitle,
@@ -203,7 +206,9 @@ export function Block(props: BlockPropType): JSX.Element {
   const columnSectionRef = useRef(null);
   const expandoRef = useRef(null);
   const snapToLatestDataInfoRef = useRef<HTMLDivElement>(null);
-  const useChartActionIcons = isFlagSet(DEV_FLAGS.USE_CHART_ACTION_ICONS_FLAG);
+  const useChartActionIcons = isExperimentEnabled(
+    EXPERIMENT_FLAGS.USE_CHART_ACTION_ICONS
+  );
 
   useEffect(() => {
     const overridePlaces = props.columns

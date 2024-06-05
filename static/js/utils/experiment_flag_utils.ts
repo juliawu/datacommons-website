@@ -18,10 +18,10 @@
 
 import queryString from "query-string";
 
-export const DEV_FLAGS = {
+export const EXPERIMENT_FLAGS = {
   // Temporary flag to gate new chart icons in the footer
   // TODO (juliawu): Remove this flag once all chart action icon changes are in.
-  USE_CHART_ACTION_ICONS_FLAG: "chartIcons",
+  USE_CHART_ACTION_ICONS: "experimentChartIcons",
 };
 
 /**
@@ -39,6 +39,6 @@ export function getFlagValue(flag: string): string | string[] {
  * @param flag flag to look for in URL
  * @returns true if flag has a value set, false otherwise.
  */
-export function isFlagSet(flag: string): boolean {
+export function isExperimentEnabled(flag: string): boolean {
   return !!getFlagValue(flag);
 }

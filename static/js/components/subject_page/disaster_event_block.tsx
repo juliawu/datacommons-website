@@ -40,15 +40,17 @@ import {
   SeverityFilter,
   TileConfig,
 } from "../../types/subject_page_proto_types";
-import { DEV_FLAGS, isFlagSet } from "../../utils/dev_flag_utils";
 import {
   fetchDisasterEventPoints,
   getDate,
-  getHashValue,
   getSeverityFilters,
   getUpdatedHash,
   getUseCache,
 } from "../../utils/disaster_event_map_utils";
+import {
+  EXPERIMENT_FLAGS,
+  isExperimentEnabled,
+} from "../../utils/experiment_flag_utils";
 import { isNlInterface } from "../../utils/explore_utils";
 import {
   getColumnTileClassName,
@@ -182,7 +184,9 @@ export const DisasterEventBlock = memo(function DisasterEventBlock(
   const columnWidth = getColumnWidth(props.columns);
   const minIdxToHide = getMinTileIdxToHide();
   const hideFilters = isNlInterface();
-  const useChartActionIcons = isFlagSet(DEV_FLAGS.USE_CHART_ACTION_ICONS_FLAG);
+  const useChartActionIcons = isExperimentEnabled(
+    EXPERIMENT_FLAGS.USE_CHART_ACTION_ICONS
+  );
   return (
     <>
       <DisasterEventMapSelectors
