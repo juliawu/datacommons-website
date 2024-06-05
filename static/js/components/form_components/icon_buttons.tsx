@@ -30,17 +30,17 @@ const ICON_SELECTED_TIMEOUT = 2000;
 
 /* Base Button Component*/
 
-const StyledButton = styled.button<{ $primary?: boolean }>`
+const StyledButton = styled.button<{ $emphasized?: boolean }>`
   align-items: center;
   background: ${(props) =>
-    props.$primary
-      ? "var(--button-primary-background-color, transparent)"
+    props.$emphasized
+      ? "var(--button-emphasized-background-color, transparent)"
       : "var(--button-background-color, transparent)"};
-  border: ${(props) => (props.$primary ? "none" : "1px solid #747775")};
+  border: ${(props) => (props.$emphasized ? "none" : "1px solid #747775")};
   border-radius: 100px;
   color: ${(props) =>
-    props.$primary
-      ? "var(--button-primary-text-color, black)"
+    props.$emphasized
+      ? "var(--button-emphasized-text-color, black)"
       : "var(--button-text-color, black)"};
   display: flex;
   font-size: 14px;
@@ -53,8 +53,8 @@ const StyledButton = styled.button<{ $primary?: boolean }>`
   width: fit-content;
   &:hover {
     background-color: ${(props) =>
-      props.$primary
-        ? "var(--button-primary-highlight-background-color, transparent)"
+      props.$emphasized
+        ? "var(--button-emphasized-highlight-background-color, transparent)"
         : "var(--button-highlight-background-color, transparent)"};
   }
 
@@ -75,7 +75,7 @@ interface ButtonProps {
   // Handler for what happens when button is clicked
   onClick: () => void;
   // Whether to use primary button styling instead of default styling
-  primary?: boolean;
+  useEmphasizedStyling?: boolean;
 }
 
 export function IconButton(props: ButtonProps): JSX.Element {
@@ -100,7 +100,7 @@ export function IconButton(props: ButtonProps): JSX.Element {
     <StyledButton
       onClick={onClickHandler}
       className={`button ${props.class || ""}`}
-      $primary={props.primary}
+      $emphasized={props.useEmphasizedStyling}
     >
       {props.icon && (
         <span className="material-icons-outlined icon">

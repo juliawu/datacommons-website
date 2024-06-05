@@ -160,7 +160,11 @@ export function ChartDownload(props: ChartDownloadPropsType): JSX.Element {
               onClick={() => triggerGAEvent(GA_EVENT_TILE_DOWNLOAD_CSV, {})}
             />
             <CopyButton textToCopy={dataCsv} label="Copy values" />
-            <IconButton label="Close" onClick={props.toggleCallback} primary />
+            <IconButton
+              label="Close"
+              onClick={props.toggleCallback}
+              useEmphasizedStyling
+            />
           </>
         )}
       </ModalFooter>
