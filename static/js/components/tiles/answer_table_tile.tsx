@@ -43,6 +43,8 @@ export interface AnswerTableTilePropType {
 interface AnswerTableData {
   // Map of entity dcid to entity name
   entityNames: Record<string, string>;
+  // Map of entity dcid to entity type
+  entityTypes: Record<string, string[]>;
   // Map of entity dcid to property expression to list of source URLs that the data came from
   sources: Record<string, Record<string, string[]>>;
   // Map of entity dcid to property expression to list of values
@@ -79,6 +81,7 @@ export function AnswerTableTile(props: AnswerTableTilePropType): JSX.Element {
             <thead>
               <tr>
                 <th></th>
+                <th>Type</th>
                 {props.columns.map((col, idx) => {
                   return <th key={`col-header-${idx}`}>{col.header}</th>;
                 })}
@@ -95,6 +98,16 @@ export function AnswerTableTile(props: AnswerTableTilePropType): JSX.Element {
                           arrow_forward
                         </span>
                       </a>
+                    </td>
+                    <td>
+                      {answerData.entityTypes[entity].map((type, typeIdx) => {
+                        return (
+                          <span key={`type-${typeIdx}`}>
+                            {type}
+                            <br />
+                          </span>
+                        );
+                      })}
                     </td>
                     {props.columns.map((col, colIdx) => {
                       return (
@@ -144,6 +157,13 @@ const fetchData = async (
       paramsSerializer: stringifyFn,
     })
   );
+  // Get the types for the entities
+  propertyPromises.push(
+    axios.get(`/api/node/propvals`, {
+      params: { dcids: [props.entities], propExpr: "->typeOf" },
+      paramsSerializer: stringifyFn,
+    })
+  );
   for (const column of props.columns) {
     propertyPromises.push(
       axios.get(`/api/node/propvals`, {
@@ -155,6 +175,7 @@ const fetchData = async (
   try {
     const resp = await Promise.all(propertyPromises);
     const entityNames = {};
+    const entityTypes = {};
     // The first promise was a promise to get the entity names
     const nameResp = resp[0];
     Object.keys(nameResp.data).forEach((entity) => {
@@ -163,9 +184,14 @@ const fetchData = async (
         ? val[0].name || val[0].value || val[0].dcid
         : entity;
     });
-
+    // The second promise was a promise to get the entity types
+    const typeResp = resp[1];
+    Object.keys(typeResp.data).forEach((entity) => {
+      const val = typeResp.data[entity];
+      entityTypes[entity] = _.uniq(val.map((type) => type.name));
+    });
     // The rest of the promises are for column values
-    const propResp = resp.slice(1);
+    const propResp = resp.slice(2);
     // map entity -> propExpr -> list of values
     const values: Record<string, Record<string, string[]>> = {};
     // map entity -> propExpr -> list of provenanceIds
@@ -232,6 +258,7 @@ const fetchData = async (
     }
     return {
       entityNames,
+      entityTypes,
       sources,
       values,
     };
@@ -254,7 +281,7 @@ function generateCsv(
     return `"${cell.replaceAll('"', '""')}"`;
   };
 
-  const headerRow = `"DCID","Name",${props.columns
+  const headerRow = `"DCID","Name","Type",${props.columns
     .map((column) => {
       const valueHeader = sanitize(column.header);
       const sourceHeader = sanitize(`${column.header} source`);
@@ -269,6 +296,8 @@ function generateCsv(
     row.push(sanitize(entity));
     // second column is entity name
     row.push(sanitize(data.entityNames[entity]));
+    // third column is entity type
+    row.push(sanitize(data.entityTypes[entity].join("; ")));
     // rest of columns are value and value's source url
     props.columns.forEach((column) => {
       const value = data.values[entity][column.propertyExpr].join("; ");
