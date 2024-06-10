@@ -296,9 +296,15 @@ function generateCsv(
 
 /** A single table cell with a collapsible "show more"/"show less" toggle */
 interface CollapsibleTableCellProps {
+  // Number of characters a single value can be before being truncated
+  // when the cell is collapsed
   charactersToShowWhenCollapsed?: number;
+  // List of sources of the values in the cell
   sources: string[];
+  // List of values to show in the cell. Each value is shown on a newline.
   values: string[];
+  // Number of values to show in a cell before being truncated when the cell
+  // is collapsed.
   valuesToShowWhenCollapsed?: number;
 }
 
@@ -352,6 +358,14 @@ function CollapsibleTableCell(props: CollapsibleTableCellProps): JSX.Element {
     </td>
   );
 
+  /** Get truncated value to show when cell is collapsed
+   *
+   * If the value is truncated, will append a trailing "..." to show user
+   * the value has been truncated.
+   *
+   * @param value the value to truncate
+   * @returns truncated value to display in cell
+   */
   function collapseValue(value: string): string {
     const slicedValue = value.slice(0, charLimit);
     const trailingDots = value.length > charLimit ? "..." : "";
