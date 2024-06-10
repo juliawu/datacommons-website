@@ -19,6 +19,7 @@
  */
 
 import {
+  DataCommonsClient,
   DataRow,
   dataRowsToCsv,
   ISO_CODE_ATTRIBUTE,
@@ -41,6 +42,7 @@ import { GeoJsonData } from "../../chart/types";
 import { URL_PATH } from "../../constants/app/visualization_constants";
 import { CSV_FIELD_DELIMITER } from "../../constants/tile_constants";
 import { USA_PLACE_DCID } from "../../shared/constants";
+import useLazyLoad from "../../shared/hooks";
 import { PointApiResponse, SeriesApiResponse } from "../../shared/stat_types";
 import {
   DataPointMetadata,
@@ -65,7 +67,6 @@ import {
 } from "../../utils/app/visualization_utils";
 import { stringifyFn } from "../../utils/axios";
 import { getPointWithin, getSeriesWithin } from "../../utils/data_fetch_utils";
-import { datacommonsClient } from "../../utils/datacommons_client";
 import { getDateRange } from "../../utils/string_utils";
 import {
   getDenomInfo,
@@ -127,6 +128,8 @@ export interface MapTilePropType {
   sources?: string[];
   // Optional: listen for property value changes with this event name
   subscribe?: string;
+  // Optional: only load the component when it enters the viewport
+  lazyLoad?: boolean;
 }
 
 // Api responses associated with a single layer of the map
@@ -188,9 +191,10 @@ export function MapTile(props: MapTilePropType): JSX.Element {
   const [mapChartData, setMapChartData] = useState<MapChartData | undefined>(
     null
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [svgHeight, setSvgHeight] = useState(null);
   const [dateOverride, setDateOverride] = useState(null);
+  const { shouldLoad, containerRef } = useLazyLoad();
   const zoomParams = props.allowZoom
     ? {
         zoomInButtonId: `${ZOOM_IN_BUTTON_ID}-${props.id}`,
@@ -199,17 +203,18 @@ export function MapTile(props: MapTilePropType): JSX.Element {
     : null;
   const showZoomButtons =
     !!zoomParams && !!mapChartData && _.isEqual(mapChartData.props, props);
-  console.log(props);
-  console.log(props.statVarSpec);
+  const dataCommonsClient = new DataCommonsClient({ apiRoot: props.apiRoot });
 
   useEffect(() => {
+    if (props.lazyLoad && !shouldLoad) {
+      return;
+    }
     if (
       _.isEmpty(mapChartData) ||
       !_.isEqual(mapChartData.props, props) ||
       !_.isEqual(mapChartData.dateOverride, dateOverride)
     ) {
       (async () => {
-        setIsLoading(true);
         try {
           const data = await fetchData(props, dateOverride);
           if (
@@ -241,6 +246,7 @@ export function MapTile(props: MapTilePropType): JSX.Element {
     legendContainer,
     mapContainer,
     dateOverride,
+    shouldLoad,
   ]);
 
   useEffect(() => {
@@ -291,6 +297,7 @@ export function MapTile(props: MapTilePropType): JSX.Element {
       subtitle={props.subtitle}
       apiRoot={props.apiRoot}
       sources={props.sources || (mapChartData && mapChartData.sources)}
+      forwardRef={containerRef}
       replacementStrings={
         mapChartData && getReplacementStrings(props, mapChartData)
       }
@@ -311,7 +318,7 @@ export function MapTile(props: MapTilePropType): JSX.Element {
             : undefined;
 
           rows.push(
-            ...(await datacommonsClient.getDataRows({
+            ...(await dataCommonsClient.getDataRows({
               childType,
               date,
               entityProps,

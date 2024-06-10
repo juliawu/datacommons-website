@@ -437,6 +437,7 @@ function renderTiles(
           <MapTile
             key={id}
             id={id}
+            lazyLoad={true}
             title={title}
             subtitle={tile.subtitle}
             place={place}
