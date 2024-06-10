@@ -127,8 +127,6 @@ export interface MapTilePropType {
   sources?: string[];
   // Optional: listen for property value changes with this event name
   subscribe?: string;
-  // Whether to use new chart action icons in footer
-  useChartActionIcons?: boolean;
 }
 
 // Api responses associated with a single layer of the map
@@ -331,7 +329,6 @@ export function MapTile(props: MapTilePropType): JSX.Element {
       exploreLink={props.showExploreMore ? getExploreLink(props) : null}
       hasErrorMsg={!_.isEmpty(mapChartData) && !!mapChartData.errorMsg}
       footnote={props.footnote}
-      useChartActionIcons={props.useChartActionIcons}
       statVarSpecs={
         !_.isEmpty(props.dataSpecs)
           ? [props.dataSpecs[0].variable]

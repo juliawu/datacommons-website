@@ -84,8 +84,6 @@ export interface ScatterTilePropType {
   subtitle?: string;
   // Optional: Override sources for this tile
   sources?: string[];
-  // Whether to use new chart action icons in footer
-  useChartActionIcons?: boolean;
 }
 
 interface RawData {
@@ -169,7 +167,6 @@ export function ScatterTile(props: ScatterTilePropType): JSX.Element {
       sources={props.sources || (scatterChartData && scatterChartData.sources)}
       subtitle={props.subtitle}
       title={props.title}
-      useChartActionIcons={props.useChartActionIcons}
       statVarSpecs={props.statVarSpec}
     >
       <div className="scatter-tile-content">

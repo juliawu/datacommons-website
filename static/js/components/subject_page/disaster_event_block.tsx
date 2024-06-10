@@ -184,9 +184,6 @@ export const DisasterEventBlock = memo(function DisasterEventBlock(
   const columnWidth = getColumnWidth(props.columns);
   const minIdxToHide = getMinTileIdxToHide();
   const hideFilters = isNlInterface();
-  const useChartActionIcons = isExperimentEnabled(
-    EXPERIMENT_FLAGS.USE_CHART_ACTION_ICONS
-  );
   return (
     <>
       <DisasterEventMapSelectors
@@ -235,8 +232,7 @@ export const DisasterEventBlock = memo(function DisasterEventBlock(
                       ? disasterEventData.disasterEventData
                       : null,
                     disasterEventData ? disasterEventData.date : "",
-                    columnTileClassName,
-                    useChartActionIcons
+                    columnTileClassName
                   )}
                 />
               );
@@ -357,8 +353,7 @@ function renderTiles(
   minIdxToHide: number,
   disasterEventData: Record<string, DisasterEventPointData>,
   date: string,
-  tileClassName?: string,
-  useChartActionIcons?: boolean
+  tileClassName?: string
 ): JSX.Element {
   if (!tiles) {
     return <></>;
@@ -396,7 +391,6 @@ function renderTiles(
             tileSpec={tile.disasterEventMapTileSpec}
             parentPlaces={props.parentPlaces}
             showExploreMore={props.showExploreMore}
-            useChartActionIcons={useChartActionIcons}
           />
         );
       }
@@ -419,7 +413,6 @@ function renderTiles(
             property={tile.histogramTileSpec.prop}
             disasterEventData={tileEventData}
             showExploreMore={props.showExploreMore}
-            useChartActionIcons={useChartActionIcons}
           />
         );
       }
@@ -442,7 +435,6 @@ function renderTiles(
             disasterEventData={tileEventData}
             enclosedPlaceType={enclosedPlaceType}
             showExploreMore={props.showExploreMore}
-            useChartActionIcons={useChartActionIcons}
           />
         );
       }

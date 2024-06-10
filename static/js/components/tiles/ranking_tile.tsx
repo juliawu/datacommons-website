@@ -67,8 +67,6 @@ export interface RankingTilePropType
   footnote?: string;
   // Optional: Override sources for this tile
   sources?: string[];
-  // Whether to use new chart action icons in footer
-  useChartActionIcons?: boolean;
 }
 
 // TODO: Use ChartTileContainer like other tiles.
@@ -228,18 +226,15 @@ export function RankingTile(props: RankingTilePropType): JSX.Element {
               statVar={statVar}
               tileId={props.id}
               title={props.title}
-              useChartActionIcons={props.useChartActionIcons}
               getChartDownloadSpec={getChartDownloadSpec}
               statVarSpecs={props.variables}
             />
           );
         })}
-      {!props.useChartActionIcons && (
-        <ChartEmbed
-          container={chartContainer.current}
-          ref={downloadModalElement}
-        />
-      )}
+      <ChartEmbed
+        container={chartContainer.current}
+        ref={downloadModalElement}
+      />
     </div>
   );
 }

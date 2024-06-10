@@ -60,8 +60,6 @@ interface SvRankingUnitsProps {
   footnote?: string;
   // Optional: Override sources for this tile
   sources?: string[];
-  // Whether to use new chart action icons in footer
-  useChartActionIcons?: boolean;
   // Function for getting the specs of the ranking tile for download
   getChartDownloadSpec?: (
     chartHeight: number,
@@ -179,16 +177,11 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
                   : null
               }
               footnote={props.footnote}
-              useChartActionIcons={props.useChartActionIcons}
               getChartDownloadSpec={getChartDownloadSpecCallback(
                 true,
                 chartTitle
               )}
-            >
-              {!props.useChartActionIcons && (
-                <NlChartFeedback id={props.tileId} />
-              )}
-            </ChartFooter>
+            />
           )}
         </div>
       ) : (
@@ -219,16 +212,11 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
                     props.showExploreMore ? getExploreLink(props, true) : null
                   }
                   footnote={props.footnote}
-                  useChartActionIcons={props.useChartActionIcons}
                   getChartDownloadSpec={getChartDownloadSpecCallback(
                     true,
                     chartTitle
                   )}
-                >
-                  {!props.useChartActionIcons && (
-                    <NlChartFeedback id={props.tileId} />
-                  )}
-                </ChartFooter>
+                />
               )}
             </div>
           )}
@@ -258,16 +246,11 @@ export function SvRankingUnits(props: SvRankingUnitsProps): JSX.Element {
                     props.showExploreMore ? getExploreLink(props, false) : null
                   }
                   footnote={props.footnote}
-                  useChartActionIcons={props.useChartActionIcons}
                   getChartDownloadSpec={getChartDownloadSpecCallback(
                     false,
                     chartTitle
                   )}
-                >
-                  {!props.useChartActionIcons && (
-                    <NlChartFeedback id={props.tileId} />
-                  )}
-                </ChartFooter>
+                />
               )}
             </div>
           )}

@@ -61,8 +61,6 @@ interface ChartTileContainerProp {
   footnote?: string;
   // Subtitle text
   subtitle?: string;
-  // Whether to use new chart action icons in footer
-  useChartActionIcons?: boolean;
   // Stat Vars for metadata rendering.
   statVarSpecs?: StatVarSpec[];
   // API root used for DC tool links.
@@ -117,11 +115,8 @@ export function ChartTileContainer(props: ChartTileContainerProp): JSX.Element {
         handleEmbed={showEmbed ? handleDownload : null}
         exploreLink={props.exploreLink}
         footnote={props.footnote}
-        useChartActionIcons={props.useChartActionIcons}
-      >
-        {!props.useChartActionIcons && <NlChartFeedback id={props.id} />}
-      </ChartFooter>
-      {showEmbed && !props.useChartActionIcons && (
+      />
+      {showEmbed && (
         <ChartEmbed
           container={containerRef.current}
           ref={downloadModalElement}

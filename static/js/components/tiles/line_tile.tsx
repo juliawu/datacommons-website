@@ -99,8 +99,6 @@ export interface LineTilePropType {
   highlightDate?: string;
   // Optional: Override sources for this tile
   sources?: string[];
-  // Whether to use new chart action icons in footer
-  useChartActionIcons?: boolean;
 }
 
 export interface LineChartData {
@@ -157,7 +155,6 @@ export function LineTile(props: LineTilePropType): JSX.Element {
       sources={props.sources || (chartData && chartData.sources)}
       subtitle={props.subtitle}
       title={props.title}
-      useChartActionIcons={props.useChartActionIcons}
       statVarSpecs={props.statVarSpec}
     >
       <div

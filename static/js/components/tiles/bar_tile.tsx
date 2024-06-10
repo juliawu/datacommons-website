@@ -96,8 +96,6 @@ interface BarTileSpecificSpec {
   xLabelLinkRoot?: string;
   // Y-axis margin / text width
   yAxisMargin?: number;
-  // Whether to use new chart action icons in footer
-  useChartActionIcons?: boolean;
 }
 
 export type BarTilePropType = MultiOrContainedInPlaceMultiVariableTileType &
@@ -160,7 +158,6 @@ export function BarTile(props: BarTilePropType): JSX.Element {
       sources={props.sources || (barChartData && barChartData.sources)}
       subtitle={props.subtitle}
       title={props.title}
-      useChartActionIcons={props.useChartActionIcons}
       statVarSpecs={props.variables}
     >
       <div

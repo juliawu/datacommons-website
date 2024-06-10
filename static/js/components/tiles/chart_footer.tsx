@@ -26,6 +26,11 @@ import {
   GA_PARAM_TILE_TYPE,
   triggerGAEvent,
 } from "../../shared/ga_events";
+import {
+  EXPERIMENT_FLAGS,
+  isExperimentEnabled,
+} from "../../utils/experiment_flag_utils";
+import { NlChartFeedback } from "../nl_feedback";
 import { ChartActions } from "./chart_action_icons";
 import { ChartDownloadSpec } from "./modal/chart_download";
 
@@ -44,8 +49,6 @@ interface ChartFooterPropType {
   children?: React.ReactNode;
   // Text to show above buttons
   footnote?: string;
-  // Whether to use new chart action icons
-  useChartActionIcons?: boolean;
   // Function to get specs of the chart to download
   getChartDownloadSpec?: () => ChartDownloadSpec;
 }
@@ -54,6 +57,11 @@ export function ChartFooter(props: ChartFooterPropType): JSX.Element {
   if (!props.handleEmbed && !props.exploreLink) {
     return null;
   }
+
+  const useChartActionIcons = isExperimentEnabled(
+    EXPERIMENT_FLAGS.USE_CHART_ACTION_ICONS
+  );
+
   return (
     <>
       <slot name="footer" {...{ part: "footer" }}>
@@ -62,7 +70,7 @@ export function ChartFooter(props: ChartFooterPropType): JSX.Element {
       <footer className="chart-container-footer">
         <div className="main-footer-section">
           <div className="outlinks">
-            {!props.useChartActionIcons && props.handleEmbed && (
+            {!useChartActionIcons && props.handleEmbed && (
               <div className="outlink-item">
                 <span className="material-icons-outlined">download</span>
                 <a
@@ -79,7 +87,7 @@ export function ChartFooter(props: ChartFooterPropType): JSX.Element {
                 </a>
               </div>
             )}
-            {!props.useChartActionIcons && props.exploreLink && (
+            {!useChartActionIcons && props.exploreLink && (
               <div className="outlink-item">
                 <span className="material-icons-outlined">timeline</span>
                 <a
@@ -99,13 +107,15 @@ export function ChartFooter(props: ChartFooterPropType): JSX.Element {
             )}
           </div>
           {props.children}
-          {props.useChartActionIcons && (
+          {useChartActionIcons ? (
             <ChartActions
               container={props.container}
               exploreLink={props.exploreLink}
               getChartDownloadSpec={props.getChartDownloadSpec}
               id={props.chartId}
             />
+          ) : (
+            <NlChartFeedback id={props.chartId} />
           )}
         </div>
       </footer>
