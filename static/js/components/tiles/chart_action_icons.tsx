@@ -18,7 +18,7 @@
  * Icons for downloading, linking, embedding, and ranking in chart footer.
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { UncontrolledTooltip } from "reactstrap";
 
 import {
@@ -46,15 +46,6 @@ interface ActionIconPropType {
 
 function ActionIcon(props: ActionIconPropType): JSX.Element {
   const linkRef = useRef<HTMLAnchorElement>();
-  // const [linkIsReady, setLinkIsReady] = useState(false);
-
-  // // Check if anchor link has rendered.
-  // // Tooltip needs the anchor link to render first to have a target to bind to.
-  // useEffect(() => {
-  //   if (linkRef.current) {
-  //     setLinkIsReady(true);
-  //   }
-  // }, [linkRef]);
 
   return (
     <div className="outlink-item action-icon">
@@ -64,7 +55,7 @@ function ActionIcon(props: ActionIconPropType): JSX.Element {
           if (!props.url) {
             event.preventDefault();
           }
-          props.onClickHandler;
+          props.onClickHandler(event);
         }}
         ref={linkRef}
         rel={props.url ? "" : "noopener noreferrer"}
@@ -113,8 +104,7 @@ export function ChartActions(props: ChartActionsPropType): JSX.Element {
           <ActionIcon
             container={props.container}
             icon="download"
-            onClickHandler={(event) => {
-              event.preventDefault();
+            onClickHandler={() => {
               triggerGAEvent(GA_EVENT_TILE_DOWNLOAD, {
                 [GA_PARAM_TILE_TYPE]: props.exploreLink?.displayText,
                 transport: "beacon",
@@ -138,7 +128,6 @@ export function ChartActions(props: ChartActionsPropType): JSX.Element {
                 [GA_PARAM_TILE_TYPE]: props.exploreLink?.displayText,
                 transport: "beacon",
               });
-              return true;
             }}
             tooltipContent={
               <>
