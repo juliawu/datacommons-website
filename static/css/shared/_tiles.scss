@@ -664,6 +664,17 @@ $box-shadow-8dp: 0 8px 10px 1px rgba(0, 0, 0, 0.14),
     line-height: 28px;
   }
 
+  .show-more-toggle {
+    align-items: center;
+    color: var(--text-link-color);
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+  }
+
   .source {
     color: var(--table-source-text-color, #5e5f59);
     font-size: 12px;
@@ -674,14 +685,14 @@ $box-shadow-8dp: 0 8px 10px 1px rgba(0, 0, 0, 0.14),
   }
 
   .table-container {
+    border: 1px solid #dee2e6;
+    border-radius: 3px;
     margin-top: 16px;
     overflow-x: auto;
     width: 100%;
   }
 
   .table {
-    border: 1px solid #dee2e6;
-    border-radius: 3px;
     color: var(--table-text-color, #212529);
     font-size: 16px;
     font-weight: 500;

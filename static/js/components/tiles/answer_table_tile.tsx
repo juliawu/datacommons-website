@@ -111,28 +111,11 @@ export function AnswerTableTile(props: AnswerTableTilePropType): JSX.Element {
                     </td>
                     {props.columns.map((col, colIdx) => {
                       return (
-                        <td key={`row-${rowIdx}-col-${colIdx}`}>
-                          {answerData.values[entity][col.propertyExpr].map(
-                            (value, valIdx) => {
-                              return (
-                                <span key={`value-${valIdx}`}>
-                                  {value}
-                                  <br />
-                                </span>
-                              );
-                            }
-                          )}
-                          {!_.isEmpty(
-                            answerData.sources[entity][col.propertyExpr]
-                          ) && (
-                            <div className="source">
-                              Source:{" "}
-                              {answerData.sources[entity][
-                                col.propertyExpr
-                              ].join(", ")}
-                            </div>
-                          )}
-                        </td>
+                        <CollapsibleTableCell
+                          key={`row-${rowIdx}-col-${colIdx}`}
+                          sources={answerData.sources[entity][col.propertyExpr]}
+                          values={answerData.values[entity][col.propertyExpr]}
+                        />
                       );
                     })}
                   </tr>
@@ -309,4 +292,69 @@ function generateCsv(
   });
 
   return `${headerRow}\n${dataRows.join("\n")}`;
+}
+
+/** A single table cell with a collapsible "show more"/"show less" toggle */
+interface CollapsibleTableCellProps {
+  charactersToShowWhenCollapsed?: number;
+  sources: string[];
+  values: string[];
+  valuesToShowWhenCollapsed?: number;
+}
+
+function CollapsibleTableCell(props: CollapsibleTableCellProps): JSX.Element {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const toggleIsCollapsed = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
+  const valueLimit = props.valuesToShowWhenCollapsed || 3;
+  const charLimit = props.charactersToShowWhenCollapsed || 50;
+  const showToggle =
+    props.values.length > valueLimit ||
+    props.values.some((value) => value.length > charLimit);
+
+  return (
+    <td>
+      {props.values.map((value, valIdx) => {
+        if (isCollapsed && valIdx > valueLimit) {
+          return;
+        }
+        return (
+          <span key={`value-${valIdx}`}>
+            {isCollapsed && showToggle ? collapseValue(value) : value}
+            <br />
+          </span>
+        );
+      })}
+      {showToggle && (
+        <span className="show-more-toggle" onClick={toggleIsCollapsed}>
+          {isCollapsed ? (
+            <>
+              <span className="material-icons-outlined arrow-icon">
+                keyboard_arrow_down
+              </span>
+              Show more
+            </>
+          ) : (
+            <>
+              <span className="material-icons-outlined arrow-icon">
+                keyboard_arrow_up
+              </span>
+              Show less
+            </>
+          )}
+        </span>
+      )}
+      {!_.isEmpty(props.sources) && (
+        <div className="source">Source: {props.sources.join(", ")}</div>
+      )}
+    </td>
+  );
+
+  function collapseValue(value: string): string {
+    const slicedValue = value.slice(0, charLimit);
+    const trailingDots = value.length > charLimit ? "..." : "";
+    return slicedValue + trailingDots;
+  }
 }
