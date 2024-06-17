@@ -31,6 +31,9 @@ import { AnswerTableColumn } from "../../types/subject_page_proto_types";
 import { stringifyFn } from "../../utils/axios";
 import { DownloadButton } from "../form_components/icon_buttons";
 
+// Number of characters to show in a cell before a "show more" toggle
+const DEFAULT_CELL_CHARACTER_LIMIT = 50;
+
 export interface AnswerTableTilePropType {
   // Title to use
   title: string;
@@ -314,11 +317,10 @@ function CollapsibleTableCell(props: CollapsibleTableCellProps): JSX.Element {
     setIsCollapsed(!isCollapsed);
   };
 
-  const valueLimit = props.valuesToShowWhenCollapsed || 3;
-  const charLimit = props.charactersToShowWhenCollapsed || 50;
-  const showToggle =
-    props.values.length > valueLimit ||
-    props.values.some((value) => value.length > charLimit);
+  const charLimit =
+    props.charactersToShowWhenCollapsed || DEFAULT_CELL_CHARACTER_LIMIT;
+  const valueLimit = findIndexBeyondCharLimit(props.values, charLimit);
+  const showToggle = props.values.length > valueLimit;
 
   return (
     <td>
@@ -360,15 +362,39 @@ function CollapsibleTableCell(props: CollapsibleTableCellProps): JSX.Element {
 
   /** Get truncated value to show when cell is collapsed
    *
-   * If the value is truncated, will append a trailing "..." to show user
-   * the value has been truncated.
+   * This is a helper function to truncate a very long value to the character
+   * limit. If the value to show is shorter than the character limit, no
+   * truncation occurs and the original value is returned.
+   * If the value is truncated, will append a trailing "..." to the value.
    *
    * @param value the value to truncate
+   * @param charLimit maximum length of a value
    * @returns truncated value to display in cell
    */
-  function collapseValue(value: string): string {
+  function collapseValue(value: string, charLimit = 50): string {
     const slicedValue = value.slice(0, charLimit);
     const trailingDots = value.length > charLimit ? "..." : "";
     return slicedValue + trailingDots;
+  }
+
+  /** Find index of values where the number of characters shown surpasses a
+   * given limit
+   *
+   * This is a helper function to determine which values to display when the
+   * cell is truncated.
+   *
+   * @param values array of values to show in a cell
+   * @param charLimit maximum number of characters to show in a cell
+   * @returns index to truncate values at
+   */
+  function findIndexBeyondCharLimit(values: string[], charLimit = 50) {
+    let cumulativeLength = 0;
+    for (const [index, value] of values.entries()) {
+      cumulativeLength += value.length;
+      if (cumulativeLength > charLimit) {
+        return index;
+      }
+    }
+    return values.length;
   }
 }
