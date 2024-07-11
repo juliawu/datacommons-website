@@ -164,7 +164,7 @@ export function RankingTile(props: RankingTilePropType): JSX.Element {
         const perCapitaVariables = props.variables
           .filter((v) => v.denom)
           .map((v) => v.statVar);
-        return datacommonsClient.getCsv({
+        return DataCommonsClient.getCsv({
           childType: props.enclosedPlaceType,
           date,
           fieldDelimiter: CSV_FIELD_DELIMITER,

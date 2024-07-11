@@ -35,6 +35,7 @@ import {
   DownloadButton,
   IconButton,
 } from "../../form_components/icon_buttons";
+import { Spinner } from "../../spinner";
 
 // SVG adjustment related constants
 const TITLE_Y = 20;
@@ -81,6 +82,7 @@ interface ChartDownloadPropsType {
 export function ChartDownload(props: ChartDownloadPropsType): JSX.Element {
   const [dataCsv, setDataCsv] = useState("");
   const [chartDownloadXml, setChartDownloadXml] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const svgContainerElement = useRef<HTMLDivElement>(null);
   const textareaElement = useRef<HTMLTextAreaElement>(null);
   const modalId = randDomId();
@@ -107,6 +109,12 @@ export function ChartDownload(props: ChartDownloadPropsType): JSX.Element {
     loadDataCsv();
   }, [loadDataCsv]);
 
+  useEffect(() => {
+    if (dataCsv && chartDownloadXml) {
+      setIsLoading(false);
+    }
+  }, [dataCsv, chartDownloadXml]);
+
   return (
     <Modal
       isOpen={props.isOpen}
@@ -125,6 +133,7 @@ export function ChartDownload(props: ChartDownloadPropsType): JSX.Element {
         })}
       </ModalHeader>
       <ModalBody>
+        <Spinner isOpen={isLoading} />
         {props.chartDownloadSpec.svgXml && (
           <div
             ref={svgContainerElement}
