@@ -37,10 +37,14 @@ import {
   getDate,
   getSeverityFilters,
 } from "../js/utils/disaster_event_map_utils";
-import { getTileEventTypeSpecs } from "../js/utils/tile_utils";
+import {
+  getHighlightTileDescription,
+  getTileEventTypeSpecs,
+} from "../js/utils/tile_utils";
 import { BARD_CLIENT_URL_PARAM } from "./constants";
 import { getBarTileResult } from "./tiles/bar_tile";
 import { getDisasterMapTileResult } from "./tiles/disaster_map_tile";
+import { getHighlightTileResult } from "./tiles/highlight_tile";
 import { getLineTileResult } from "./tiles/line_tile";
 import { getMapTileResult } from "./tiles/map_tile";
 import { getRankingTileResult } from "./tiles/ranking_tile";
@@ -57,8 +61,6 @@ const BARD_ALLOWED_CHARTS = new Set(["LINE", "BAR", "RANKING", "SCATTER"]);
 const DC_URL_ROOT = "https://datacommons.org/explore#q=";
 // Detector to use when handling nl queries
 const QUERY_DETECTOR = "heuristic";
-// Index to use when handling nl queries
-const QUERY_IDX = "medium_ft";
 // Number of related questions to return
 const NUM_RELATED_QUESTIONS = 6;
 
@@ -83,7 +85,8 @@ function getBlockTileResults(
   useChartUrl: boolean,
   apikey: string,
   apiRoot: string,
-  allowedTilesTypes?: Set<string>
+  allowedTilesTypes?: Set<string>,
+  mode?: string
 ): Promise<TileResult[] | TileResult>[] {
   const tilePromises = [];
   const svProvider = new StatVarProvider(svSpec);
@@ -107,7 +110,8 @@ function getBlockTileResults(
               apiRoot,
               urlRoot,
               useChartUrl,
-              apikey
+              apikey,
+              mode
             )
           );
           break;
@@ -139,7 +143,8 @@ function getBlockTileResults(
               apiRoot,
               urlRoot,
               useChartUrl,
-              apikey
+              apikey,
+              mode
             )
           );
           break;
@@ -173,6 +178,13 @@ function getBlockTileResults(
               useChartUrl,
               apikey
             )
+          );
+          break;
+        case "HIGHLIGHT":
+          tileSvSpec = svProvider.getSpec(tile.statVarKey[0], { blockDenom });
+          tile.description = getHighlightTileDescription(tile, blockDenom);
+          tilePromises.push(
+            getHighlightTileResult(tileId, tile, place, tileSvSpec, apiRoot)
           );
           break;
         default:
@@ -280,20 +292,36 @@ export async function getQueryResult(
   client: string,
   mode: string,
   varThreshold: string,
-  wantRelatedQuestions: boolean
+  wantRelatedQuestions: boolean,
+  idx?: string
 ): Promise<QueryResult> {
   const startTime = process.hrtime.bigint();
+  // if mode is empty or mode=bard, use BARD_ALLOWED_CHARTS, otherwise, no
+  // restriction on allowed chart types
   const allowedTileTypes =
-    client === BARD_CLIENT_URL_PARAM ? BARD_ALLOWED_CHARTS : null;
+    mode && mode !== BARD_CLIENT_URL_PARAM ? null : BARD_ALLOWED_CHARTS;
 
   // Get the nl detect-and-fulfill result for the query
   // TODO: only generate related things when we need to generate related question
   let nlResp = null;
+  let url = `${apiRoot}/api/explore/detect-and-fulfill?q=${query}&detector=${QUERY_DETECTOR}`;
+  const params = {
+    client,
+    idx,
+    mode,
+    skipRelatedThings: wantRelatedQuestions ? "" : "true",
+    varThreshold,
+  };
+  Object.keys(params)
+    .sort()
+    .forEach((urlKey) => {
+      if (!params[urlKey]) {
+        return;
+      }
+      url += `&${urlKey}=${params[urlKey]}`;
+    });
   try {
-    nlResp = await axios.post(
-      `${apiRoot}/api/explore/detect-and-fulfill?q=${query}&mode=${mode}&client=${client}&detector=${QUERY_DETECTOR}&varThreshold=${varThreshold}&idx=${QUERY_IDX}`,
-      {}
-    );
+    nlResp = await axios.post(url, {});
   } catch (e) {
     console.error("Error making request:\n", e.message);
     return { err: "Error fetching data." };
@@ -369,7 +397,8 @@ export async function getQueryResult(
             useChartUrl,
             apikey,
             apiRoot,
-            allowedTileTypes
+            allowedTileTypes,
+            mode
           );
       }
       tilePromises.push(...blockTilePromises);
@@ -404,6 +433,7 @@ export async function getQueryResult(
       getTileResults: getElapsedTime(nlResultTime, endTime),
       total: getElapsedTime(startTime, endTime),
     },
+    websiteCommit: process.env.WEBSITE_HASH || "",
   };
   const result: QueryResult = { charts: processedResults, debug };
   if (wantRelatedQuestions) {

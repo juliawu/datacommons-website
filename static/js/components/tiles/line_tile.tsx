@@ -18,11 +18,7 @@
  * Component for rendering a line type tile.
  */
 
-import {
-  DataCommonsClient,
-  isDateInRange,
-  ISO_CODE_ATTRIBUTE,
-} from "@datacommonsorg/client";
+import { isDateInRange, ISO_CODE_ATTRIBUTE } from "@datacommonsorg/client";
 import _ from "lodash";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
@@ -32,6 +28,7 @@ import { drawLineChart } from "../../chart/draw_line";
 import { TimeScaleOption } from "../../chart/types";
 import { URL_PATH } from "../../constants/app/visualization_constants";
 import { CSV_FIELD_DELIMITER } from "../../constants/tile_constants";
+import { useLazyLoad } from "../../shared/hooks";
 import { SeriesApiResponse } from "../../shared/stat_types";
 import { NamedTypedPlace, StatVarSpec } from "../../shared/types";
 import { computeRatio } from "../../tools/shared_util";
@@ -39,6 +36,7 @@ import {
   getContextStatVar,
   getHash,
 } from "../../utils/app/visualization_utils";
+import { getDataCommonsClient } from "../../utils/data_commons_client";
 import {
   getBestUnit,
   getSeries,
@@ -47,11 +45,11 @@ import {
 import { getPlaceNames } from "../../utils/place_utils";
 import { getUnit } from "../../utils/stat_metadata_utils";
 import {
+  clearContainer,
   getNoDataErrorMsg,
   getStatFormat,
   getStatVarNames,
   ReplacementStrings,
-  showError,
   transformCsvHeader,
 } from "../../utils/tile_utils";
 import { ChartTileContainer } from "./chart_tile";
@@ -102,6 +100,13 @@ export interface LineTilePropType {
   highlightDate?: string;
   // Optional: Override sources for this tile
   sources?: string[];
+  // Optional: only load this component when it's near the viewport
+  lazyLoad?: boolean;
+  /**
+   * Optional: If lazy loading is enabled, load the component when it is within
+   * this margin of the viewport. Default: "0px"
+   */
+  lazyLoadMargin?: string;
 }
 
 export interface LineChartData {
@@ -116,13 +121,16 @@ export interface LineChartData {
 export function LineTile(props: LineTilePropType): JSX.Element {
   const svgContainer = useRef(null);
   const [chartData, setChartData] = useState<LineChartData | undefined>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const { shouldLoad, containerRef } = useLazyLoad(props.lazyLoadMargin);
   useEffect(() => {
+    if (props.lazyLoad && !shouldLoad) {
+      return;
+    }
     if (!chartData || !_.isEqual(chartData.props, props)) {
       (async () => {
-        setIsLoading(true);
         try {
+          setIsLoading(true);
           const data = await fetchData(props);
           if (props && _.isEqual(data.props, props)) {
             setChartData(data);
@@ -132,7 +140,7 @@ export function LineTile(props: LineTilePropType): JSX.Element {
         }
       })();
     }
-  }, [props, chartData]);
+  }, [props, chartData, shouldLoad]);
 
   const drawFn = useCallback(() => {
     if (_.isEmpty(chartData)) {
@@ -150,7 +158,7 @@ export function LineTile(props: LineTilePropType): JSX.Element {
       exploreLink={props.showExploreMore ? getExploreLink(props) : null}
       footnote={props.footnote}
       getDataCsv={getDataCsvCallback(props)}
-      hasErrorMsg={chartData && !!chartData.errorMsg}
+      errorMsg={chartData && chartData.errorMsg}
       id={props.id}
       isInitialLoading={_.isNull(chartData)}
       isLoading={isLoading}
@@ -159,12 +167,16 @@ export function LineTile(props: LineTilePropType): JSX.Element {
       subtitle={props.subtitle}
       title={props.title}
       statVarSpecs={props.statVarSpec}
+      forwardRef={containerRef}
     >
       <div
         id={props.id}
         className="svg-container"
         ref={svgContainer}
-        style={{ minHeight: props.svgChartHeight }}
+        style={{
+          minHeight: props.svgChartHeight,
+          display: chartData && chartData.errorMsg ? "none" : "block",
+        }}
       ></div>
     </ChartTileContainer>
   );
@@ -176,7 +188,7 @@ export function LineTile(props: LineTilePropType): JSX.Element {
  * @returns Async function for fetching chart CSV
  */
 function getDataCsvCallback(props: LineTilePropType): () => Promise<string> {
-  const dataCommonsClient = new DataCommonsClient({ apiRoot: props.apiRoot });
+  const dataCommonsClient = getDataCommonsClient(props.apiRoot);
   return () => {
     const perCapitaVariables = props.statVarSpec
       .filter((v) => v.denom)
@@ -317,7 +329,7 @@ export function draw(
   // TODO: Remove all cases of setting innerHTML directly.
   svgContainer.innerHTML = "";
   if (chartData.errorMsg) {
-    showError(chartData.errorMsg, svgContainer);
+    clearContainer(svgContainer);
     return;
   }
   const isCompleteLine = drawLineChart(

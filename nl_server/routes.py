@@ -48,17 +48,19 @@ def healthz():
 def encode():
   """Returns a list of embeddings for each input query.
 
-  List[List[float]]
+  Dict[str, List[float]]
   """
   model_name = request.json.get('model', '')
-  queries = request.json.get('queries', [])
+  queries = request.json.get('queries')
+  if not queries:
+    return json.dumps({})
   queries = [str(escape(q)) for q in queries]
   reg: Registry = current_app.config[REGISTRY_KEY]
   model = reg.get_embedding_model(model_name)
   query_embeddings = model.encode(queries)
   if model.returns_tensor:
     query_embeddings = query_embeddings.tolist()
-  return json.dumps(query_embeddings)
+  return json.dumps({q: e for q, e in zip(queries, query_embeddings)})
 
 
 @bp.route('/api/search_vars/', methods=['POST'])
@@ -74,6 +76,7 @@ def search_vars():
   queries = request.json.get('queries', [])
   queries = [str(escape(q)) for q in queries]
 
+  # TODO: clean up skip topics, may not be used anymore
   skip_topics = False
   if request.args.get('skip_topics'):
     skip_topics = True
@@ -96,7 +99,7 @@ def search_vars():
 
   embeddings = _get_indexes(reg, idx_types)
 
-  debug_logs = {'sv_detection_query_index_type': idx_types}
+  debug_logs = {'sv_detection_query_index_types': idx_types}
   results = search.search_vars(embeddings, queries, skip_topics, reranker_model,
                                debug_logs)
   q2result = {q: var_candidates_to_dict(result) for q, result in results.items()}
@@ -125,10 +128,12 @@ def embeddings_version_map():
   return json.dumps(asdict(server_config))
 
 
-@bp.route('/api/load/', methods=['GET'])
+@bp.route('/api/load/', methods=['POST'])
 def load():
+  additional_catalog_path = request.json.get('additional_catalog_path', None)
   try:
-    current_app.config[REGISTRY_KEY] = registry.build()
+    current_app.config[REGISTRY_KEY] = registry.build(
+        additional_catalog_path=additional_catalog_path)
   except Exception as e:
     logging.error(f'Server registry not built due to error: {str(e)}')
   reg: Registry = current_app.config[REGISTRY_KEY]

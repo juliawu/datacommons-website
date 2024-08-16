@@ -24,7 +24,7 @@ namespace:
   name: "website"
 
 website:
-  flaskEnv: custom
+  flaskEnv: bard
   replicas: 20
   redis:
     enabled: true
@@ -47,14 +47,20 @@ ingress:
 nl:
   enabled: true
   memory: "10G"
-  workers: 1
+  workers: 3
   env:
     default_indexes:
-      - medium_ft
+      - base_uae_mem
     enabled_indexes:
       - medium_ft
       - sdg_ft
       - undata_ft
+      - base_uae_mem
+    vertex_ai_models:
+      uae-large-v1-model:
+        project_id: datcom-nl
+        location: us-central1
+        prediction_endpoint_id: "1309973546495115264"
 
 nodejs:
   enabled: true
@@ -69,7 +75,7 @@ serviceGroups:
   node:
     replicas: 25
     # Use a machine with more CPU for node pods
-    nodePool: "default-pool"
+    nodePool: "pool-e2-cpu"
   observation:
     replicas: 15
     nodePool: "default-pool"
@@ -85,3 +91,4 @@ cronTesting:
   enableSanity: false
   enableAdversarial: false
   schedule: "0 */12 * * *"
+  nodePool: "default-pool"
