@@ -56,6 +56,10 @@ const config = {
       __dirname + "/js/place/dev_place.ts",
       __dirname + "/css/place/dev_place_page.scss",
     ],
+    seo_experiment_place: [
+      __dirname + "/js/place/seo_experiment_place.ts",
+      __dirname + "/css/place/seo_experiment_place_page.scss",
+    ],
     topic_page: [
       __dirname + "/js/apps/topic_page/main.ts",
       __dirname + "/css/topic_page.scss",

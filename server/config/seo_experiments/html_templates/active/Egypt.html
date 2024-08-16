@@ -31,7 +31,7 @@ _('Place Explorer') %}
 {% set similar_places = "country/NGA country/FRA country/USA country/IND country/CHN" %}
 
 {% block head %}
-<link rel="stylesheet" href={{url_for('static', filename='css/dev_place_page.min.css' , t=config['VERSION'])}}>
+<link rel="stylesheet" href={{url_for('static', filename='css/seo_experiment_place_page.min.css' , t=config['VERSION'])}}>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 <script src="https://datacommons.org/datacommons.js"></script>
 {% if locale == "en" %}
@@ -79,10 +79,7 @@ _('Place Explorer') %}
       </div>
   
       <div id="place-summary" class="summary-text">
-        Egypt is a country in Asia and Africa. The population in Egypt was 109,262,178 in 2021. The nominal GDP per capita in
-        Egypt was $3,886.72 in 2021. The Gini index in Egypt was 31.9 in 2019. The life expectancy in Egypt was 70.22 in
-        2021. The energy consumption per capita in Egypt was 782.76kg in 2014. The carbon dioxide emissions per capita in
-        Egypt was 1.96t in 2020.
+        {{ place_summary }}
       </div>
   
       <div class="charts-container">
@@ -128,7 +125,7 @@ _('Place Explorer') %}
                   places="{{place_dcid}}"></datacommons-line>
               </div>
               <div class="block-column">
-                <datacommons-bar header="Market capitalization of domestic companies" variables="Amount_Stock"
+                <datacommons-bar header="Market capitalization of domestic companies: other countries" variables="Amount_Stock"
                   places="{{place_dcid}} {{ similar_places }}"></datacommons-bar>
               </div>
             </div>
@@ -401,7 +398,7 @@ _('Place Explorer') %}
 {% endblock %}
 
 {% block footer %}
-<script src={{url_for('static', filename='dev_place.js' , t=config['VERSION'])}}></script>
+<script src={{url_for('static', filename='seo_experiment_place.js' , t=config['VERSION'])}}></script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{maps_api_key}}&libraries=places&language={{locale}}" async
   defer></script>
 {% endblock %}

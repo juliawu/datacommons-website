@@ -75,7 +75,13 @@ SEO_EXPERIMENT_HTML_GCS_DIR = "seo_experiments/active"
 SEO_EXPERIMENT_HTML_LOCAL_DIR = "config/seo_experiments/html_templates/active/"
 
 # Map DCID of SEO experiment places to their template filename
-SEO_EXPERIMENT_DCID_TO_HTML = {"country/EGY": "Egypt.html"}
+SEO_EXPERIMENT_DCID_TO_HTML = {
+    "country/EGY": "Egypt.html",
+    "country/CHL": "Chile.html",
+    "country/NOR": "Norway.html",
+    "country/VGB": "BritishVirginIslands.html",
+    "geoId/17": "Illinois.html",
+}
 
 
 def get_seo_experiment_template(dcid: str, use_local_template=False) -> str:
