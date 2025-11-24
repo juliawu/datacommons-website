@@ -65,9 +65,9 @@ fi
 
 echo "Starting NL Server..."
 if [[ $VERBOSE == "true" ]]; then
-  python3 nl_app.py 6070 &
+  gunicorn nl_app:app --workers 32 --bind 0.0.0.0:6070 --timeout 120 &
 else
-  python3 nl_app.py 6070 > /dev/null 2>&1 &
+  gunicorn nl_app:app --workers 32 --bind 0.0.0.0:6070 --timeout 120 > /dev/null 2>&1 &
 fi
 NL_PID=$!
 
@@ -76,9 +76,9 @@ export NL_SERVICE_ROOT_URL="http://localhost:6070"
 
 echo "Starting Website server..."
 if [[ $VERBOSE == "true" ]]; then
-  python3 web_app.py 8090 &
+  gunicorn web_app:app --workers 32 --bind 0.0.0.0:8090 --timeout 120 &
 else
-  python3 web_app.py 8090 > /dev/null 2>&1 &
+  gunicorn web_app:app --workers 32 --bind 0.0.0.0:8090 --timeout 120 > /dev/null 2>&1 &
 fi
 WEB_PID=$!
 
