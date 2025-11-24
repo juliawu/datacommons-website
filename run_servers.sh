@@ -63,11 +63,14 @@ if lsof -i :8090 > /dev/null 2>&1; then
   exit 1
 fi
 
+# Default to 32 workers for CI, but allow override (e.g. for local dev).
+NUM_WORKERS=${NUM_WORKERS:-32}
+
 echo "Starting NL Server..."
 if [[ $VERBOSE == "true" ]]; then
-  gunicorn nl_app:app --workers 32 --bind 0.0.0.0:6070 --timeout 120 &
+  gunicorn nl_app:app --workers $NUM_WORKERS --bind 0.0.0.0:6070 --timeout 120 --preload &
 else
-  gunicorn nl_app:app --workers 32 --bind 0.0.0.0:6070 --timeout 120 > /dev/null 2>&1 &
+  gunicorn nl_app:app --workers $NUM_WORKERS --bind 0.0.0.0:6070 --timeout 120 --preload > /dev/null 2>&1 &
 fi
 NL_PID=$!
 
@@ -76,9 +79,9 @@ export NL_SERVICE_ROOT_URL="http://localhost:6070"
 
 echo "Starting Website server..."
 if [[ $VERBOSE == "true" ]]; then
-  gunicorn web_app:app --workers 32 --bind 0.0.0.0:8090 --timeout 120 &
+  gunicorn web_app:app --workers $NUM_WORKERS --bind 0.0.0.0:8090 --timeout 120 --preload &
 else
-  gunicorn web_app:app --workers 32 --bind 0.0.0.0:8090 --timeout 120 > /dev/null 2>&1 &
+  gunicorn web_app:app --workers $NUM_WORKERS --bind 0.0.0.0:8090 --timeout 120 --preload > /dev/null 2>&1 &
 fi
 WEB_PID=$!
 
