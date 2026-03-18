@@ -17,7 +17,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { Page, RankingPagePropType } from "./ranking_page";
+import { OldRankingPage, RankingPagePropType } from "./old_ranking_page";
 
 /**
  * Export the component so this can be used as a library in a static page.
@@ -31,5 +31,5 @@ export const renderRankingComponent = (
   element: HTMLElement,
   props: RankingPagePropType
 ): void => {
-  ReactDOM.render(React.createElement(Page, props), element);
+  ReactDOM.render(React.createElement(OldRankingPage, props), element);
 };

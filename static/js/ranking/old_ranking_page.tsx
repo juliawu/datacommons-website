@@ -54,7 +54,7 @@ interface RankingPageStateType {
   data: LocationRankData;
 }
 
-export class Page extends React.Component<
+export class OldRankingPage extends React.Component<
   RankingPagePropType,
   RankingPageStateType
 > {
