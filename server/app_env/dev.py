@@ -25,3 +25,4 @@ class Config(_base.Config):
   USE_MEMCACHE = False
   ENABLE_BQ = True
   DISABLE_CRAWLERS = True
+  SHOW_DISASTER = False
